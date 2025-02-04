@@ -3,6 +3,26 @@ SDL sdl;
 
 void SDL::Init(TTree *tree) {
   tree->SetMakeClass(1);
+
+  // Added by Kasia -------------------------------------------------------------
+  sim_etadiffs_branch = 0;
+  if (tree->GetBranch("sim_etadiffs") != 0) {
+    sim_etadiffs_branch = tree->GetBranch("sim_etadiffs");
+    if (sim_etadiffs_branch) { sim_etadiffs_branch->SetAddress(&sim_etadiffs_); }
+  }
+  sim_phidiffs_branch = 0;
+  if (tree->GetBranch("sim_phidiffs") != 0) {
+    sim_phidiffs_branch = tree->GetBranch("sim_phidiffs");
+    if (sim_phidiffs_branch) { sim_phidiffs_branch->SetAddress(&sim_phidiffs_); }
+  }
+
+  sim_rjet_branch = 0;
+  if (tree->GetBranch("sim_rjet") != 0) {
+    sim_rjet_branch = tree->GetBranch("sim_rjet");
+    if (sim_rjet_branch) { sim_rjet_branch->SetAddress(&sim_rjet_); }
+  }
+  // ----------------------------------------------------------------------------
+
   pT5_occupancies_branch = 0;
   if (tree->GetBranch("pT5_occupancies") != 0) {
     pT5_occupancies_branch = tree->GetBranch("pT5_occupancies");
@@ -737,6 +757,12 @@ void SDL::Init(TTree *tree) {
 }
 void SDL::GetEntry(unsigned int idx) {
   index = idx;
+
+  // Added by Kasia
+  sim_etadiffs_isLoaded = false;
+  sim_phidiffs_isLoaded = false;
+  sim_rjet_isLoaded = false;
+
   pT5_occupancies_isLoaded = false;
   t3_phi_isLoaded = false;
   t5_score_rphisum_isLoaded = false;
@@ -885,6 +911,12 @@ void SDL::GetEntry(unsigned int idx) {
   pT3_matched_simIdx_isLoaded = false;
 }
 void SDL::LoadAllBranches() {
+
+  //Added by Kasia
+  if (sim_etadiffs_branch != 0) sim_etadiffs();
+  if (sim_phidiffs_branch != 0) sim_phidiffs();
+  if (sim_rjet_branch != 0) sim_rjet();
+
   if (pT5_occupancies_branch != 0) pT5_occupancies();
   if (t3_phi_branch != 0) t3_phi();
   if (t5_score_rphisum_branch != 0) t5_score_rphisum();
@@ -1032,6 +1064,46 @@ void SDL::LoadAllBranches() {
   if (tce_rzChiSquared_branch != 0) tce_rzChiSquared();
   if (pT3_matched_simIdx_branch != 0) pT3_matched_simIdx();
 }
+
+// Added by Kasia ----------------------------------------------------------
+const vector<float> &SDL::sim_etadiffs() {
+ if (not sim_etadiffs_isLoaded) {
+   if (sim_etadiffs_branch != 0) {
+     sim_etadiffs_branch->GetEntry(index);
+   } else {
+     printf("branch sim_etadiffs_branch does not exist!\n");
+     exit(1);
+   }
+   sim_etadiffs_isLoaded = true;
+ }
+ return *sim_etadiffs_;
+}
+const vector<float> &SDL::sim_phidiffs() {
+ if (not sim_phidiffs_isLoaded) {
+   if (sim_phidiffs_branch != 0) {
+     sim_phidiffs_branch->GetEntry(index);
+   } else {
+     printf("branch sim_phidiffs_branch does not exist!\n");
+     exit(1);
+   }
+   sim_phidiffs_isLoaded = true;
+ }
+ return *sim_phidiffs_;
+}
+const vector<float> &SDL::sim_rjet() {
+ if (not sim_rjet_isLoaded) {
+   if (sim_rjet_branch != 0) {
+     sim_rjet_branch->GetEntry(index);
+   } else {
+     printf("branch sim_rjet_branch does not exist!\n");
+     exit(1);
+   }
+   sim_rjet_isLoaded = true;
+ }
+ return *sim_rjet_;
+}
+// --------------------------------------------------------------------------
+
 const int &SDL::pT5_occupancies() {
   if (not pT5_occupancies_isLoaded) {
     if (pT5_occupancies_branch != 0) {
@@ -2803,6 +2875,12 @@ void SDL::progress( int nEventsTotal, int nEventsChain ){
   }
 }
 namespace tas {
+
+  // Added by Kasia
+  const vector<float> &sim_etadiffs() { return sdl.sim_etadiffs(); }
+  const vector<float> &sim_phidiffs() { return sdl.sim_phidiffs(); }
+  const vector<float> &sim_rjet() { return sdl.sim_rjet(); }
+
   const int &pT5_occupancies() { return sdl.pT5_occupancies(); }
   const vector<float> &t3_phi() { return sdl.t3_phi(); }
   const vector<float> &t5_score_rphisum() { return sdl.t5_score_rphisum(); }

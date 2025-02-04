@@ -721,7 +721,7 @@ void fillEfficiencySet(int isimtrk, SimTrackSetDefinition& effset)
             ana.tx.pushbackToBranch<float>(category_name + "_ie_numer_phi", phi);
     }
 
-// Added by kk829 ---------------------------------------------------------------------------------
+// Added by Kasia ---------------------------------------------------------------------------------
         // vs. etadiffs plot
         ana.tx.pushbackToBranch<float>(category_name + "_ef_denom_etadiffs", etadiffs);
         if (pass)
