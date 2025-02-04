@@ -3,6 +3,25 @@ trktree trk;
 
 void trktree::Init(TTree *tree) {
   tree->SetMakeClass(1);
+
+  // Added by Kasia --------------------------------------------------------------------
+  sim_etadiffs_branch = 0;
+  if (tree->GetBranch("sim_etadiffs") != 0) {
+    sim_etadiffs_branch = tree->GetBranch("sim_etadiffs");
+    if (sim_etadiffs_branch) { sim_etadiffs_branch->SetAddress(&sim_etadiffs_); }
+  }
+  sim_phidiffs_branch = 0;
+  if (tree->GetBranch("sim_phidiffs") != 0) {
+    sim_phidiffs_branch = tree->GetBranch("sim_phidiffs");
+    if (sim_phidiffs_branch) { sim_phidiffs_branch->SetAddress(&sim_phidiffs_); }
+  }
+  sim_rjet_branch = 0;
+  if (tree->GetBranch("sim_rjet") != 0) {
+    sim_rjet_branch = tree->GetBranch("sim_rjet");
+    if (sim_rjet_branch) { sim_rjet_branch->SetAddress(&sim_rjet_); }
+  }
+  //------------------------------------------------------------------------------------
+
   see_stateCcov01_branch = 0;
   if (tree->GetBranch("see_stateCcov01") != 0) {
     see_stateCcov01_branch = tree->GetBranch("see_stateCcov01");
@@ -1522,6 +1541,11 @@ void trktree::Init(TTree *tree) {
 }
 void trktree::GetEntry(unsigned int idx) {
   index = idx;
+
+  sim_etadiffs_isLoaded = false; // Added by Kasia
+  sim_phidiffs_isLoaded = false; // Added by Kasia
+  sim_rjet_isLoaded = false; // Added by Kasia
+
   see_stateCcov01_isLoaded = false;
   simhit_rod_isLoaded = false;
   trk_phi_isLoaded = false;
@@ -1827,6 +1851,11 @@ void trktree::GetEntry(unsigned int idx) {
   see_stateTrajGlbPy_isLoaded = false;
 }
 void trktree::LoadAllBranches() {
+
+  if (sim_etadiffs_branch != 0) sim_etadiffs(); // Added by Kasia
+  if (sim_phidiffs_branch != 0) sim_phidiffs(); // Added by Kasia
+  if (sim_rjet_branch != 0) sim_rjet(); // Added by Kasia
+
   if (see_stateCcov01_branch != 0) see_stateCcov01();
   if (simhit_rod_branch != 0) simhit_rod();
   if (trk_phi_branch != 0) trk_phi();
@@ -2131,6 +2160,47 @@ void trktree::LoadAllBranches() {
   if (trk_inner_pt_branch != 0) trk_inner_pt();
   if (see_stateTrajGlbPy_branch != 0) see_stateTrajGlbPy();
 }
+
+// Added by Kasia
+const vector<float> &trktree::sim_etadiffs() {
+  if (not sim_etadiffs_isLoaded) {
+    if (sim_etadiffs_branch != 0) {
+      sim_etadiffs_branch->GetEntry(index);
+    } else {
+      printf("branch sim_etadiffs_branch does not exist!\n");
+      exit(1);
+    }
+    sim_etadiffs_isLoaded = true;
+  }
+  return *sim_etadiffs_;
+}
+// Added by Kasia
+const vector<float> &trktree::sim_phidiffs() {
+  if (not sim_phidiffs_isLoaded) {
+    if (sim_phidiffs_branch != 0) {
+      sim_phidiffs_branch->GetEntry(index);
+    } else {
+      printf("branch sim_phidiffs_branch does not exist!\n");
+      exit(1);
+    }
+    sim_phidiffs_isLoaded = true;
+  }
+  return *sim_phidiffs_;
+}
+// Added by Kasia
+const vector<float> &trktree::sim_rjet() {
+  if (not sim_rjet_isLoaded) {
+    if (sim_rjet_branch != 0) {
+      sim_rjet_branch->GetEntry(index);
+    } else {
+      printf("branch sim_rjet_branch does not exist!\n");
+      exit(1);
+    }
+    sim_rjet_isLoaded = true;
+  }
+  return *sim_rjet_;
+}
+
 const vector<float> &trktree::see_stateCcov01() {
   if (not see_stateCcov01_isLoaded) {
     if (see_stateCcov01_branch != 0) {
