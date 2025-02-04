@@ -386,6 +386,47 @@ void bookEfficiencySet(SimTrackSetDefinition& effset)
 {
     TString category_name = TString::Format("%s_%d_%d", effset.set_name.Data(), effset.pdgid, effset.q);
 
+    // Added by Kasia -----------------------------------------------------------------------------------------
+    // Lines for etadiffs
+    ana.tx.createBranch<vector<float>>(category_name + "_ef_denom_etadiffs");
+    ana.histograms.addVecHistogram(category_name + "_ef_denom_etadiffs", 180 , -4.5  , 4.5  , [&, category_name]() 
+    {return ana.tx.getBranchLazy<vector<float>>(category_name + "_ef_denom_etadiffs");} );
+
+    ana.tx.createBranch<vector<float>>(category_name + "_ef_numer_etadiffs");
+    ana.histograms.addVecHistogram(category_name + "_ef_numer_etadiffs", 180 , -4.5  , 4.5  , [&, category_name]() 
+    {return ana.tx.getBranchLazy<vector<float>>(category_name + "_ef_numer_etadiffs");} );
+
+    ana.tx.createBranch<vector<float>>(category_name + "_ie_numer_etadiffs");
+    ana.histograms.addVecHistogram(category_name + "_ie_numer_etadiffs", 180 , -4.5  , 4.5  , [&, category_name]() 
+    {return ana.tx.getBranchLazy<vector<float>>(category_name + "_ie_numer_etadiffs");} );
+
+    // Lines for phidiffs
+    ana.tx.createBranch<vector<float>>(category_name + "_ef_denom_phidiffs");
+    ana.histograms.addVecHistogram(category_name + "_ef_denom_phidiffs", 180 , -4.5  , 4.5  , [&, category_name]() 
+    {return ana.tx.getBranchLazy<vector<float>>(category_name + "_ef_denom_phidiffs");} );
+
+    ana.tx.createBranch<vector<float>>(category_name + "_ef_numer_phidiffs");
+    ana.histograms.addVecHistogram(category_name + "_ef_numer_phidiffs", 180 , -4.5  , 4.5  , [&, category_name]() 
+    {return ana.tx.getBranchLazy<vector<float>>(category_name + "_ef_numer_phidiffs");} );
+
+    ana.tx.createBranch<vector<float>>(category_name + "_ie_numer_phidiffs");
+    ana.histograms.addVecHistogram(category_name + "_ie_numer_phidiffs", 180 , -4.5  , 4.5  , [&, category_name]() 
+    {return ana.tx.getBranchLazy<vector<float>>(category_name + "_ie_numer_phidiffs");} );
+
+    // Lines for rjet
+    ana.tx.createBranch<vector<float>>(category_name + "_ef_denom_rjet");
+    ana.histograms.addVecHistogram(category_name + "_ef_denom_rjet", 180 , -4.5  , 4.5  , [&, category_name]() 
+    {return ana.tx.getBranchLazy<vector<float>>(category_name + "_ef_denom_rjet");} );
+
+    ana.tx.createBranch<vector<float>>(category_name + "_ef_numer_rjet");
+    ana.histograms.addVecHistogram(category_name + "_ef_numer_rjet", 180 , -4.5  , 4.5  , [&, category_name]() 
+    {return ana.tx.getBranchLazy<vector<float>>(category_name + "_ef_numer_rjet");} );
+
+    ana.tx.createBranch<vector<float>>(category_name + "_ie_numer_rjet");
+    ana.histograms.addVecHistogram(category_name + "_ie_numer_rjet", 180 , -4.5  , 4.5  , [&, category_name]() 
+    {return ana.tx.getBranchLazy<vector<float>>(category_name + "_ie_numer_rjet");} );
+    // --------------------------------------------------------------------------------------------------------
+
     // Denominator tracks' quantities
     ana.tx.createBranch<vector<float>>(category_name + "_ef_denom_pt");
     ana.tx.createBranch<vector<float>>(category_name + "_ef_denom_eta");
@@ -574,6 +615,11 @@ void fillEfficiencySet(int isimtrk, SimTrackSetDefinition& effset)
     //     return;
     //=========================================================
 
+    // Added by Kasia
+    const float &etadiffs = sdl.sim_etadiffs()[isimtrk];
+    const float &phidiffs = sdl.sim_phidiffs()[isimtrk];
+    const float &rjet = sdl.sim_rjet()[isimtrk];
+
     const float &pt = sdl.sim_pt()[isimtrk];
     const float &eta = sdl.sim_eta()[isimtrk];
     const float &dz = sdl.sim_pca_dz()[isimtrk];
@@ -674,6 +720,29 @@ void fillEfficiencySet(int isimtrk, SimTrackSetDefinition& effset)
         else
             ana.tx.pushbackToBranch<float>(category_name + "_ie_numer_phi", phi);
     }
+
+// Added by kk829 ---------------------------------------------------------------------------------
+        // vs. etadiffs plot
+        ana.tx.pushbackToBranch<float>(category_name + "_ef_denom_etadiffs", etadiffs);
+        if (pass)
+            ana.tx.pushbackToBranch<float>(category_name + "_ef_numer_etadiffs", etadiffs);
+        else
+            ana.tx.pushbackToBranch<float>(category_name + "_ie_numer_etadiffs", etadiffs);
+
+        // vs. phidiffs plot
+        ana.tx.pushbackToBranch<float>(category_name + "_ef_denom_phidiffs", phidiffs);
+        if (pass)
+            ana.tx.pushbackToBranch<float>(category_name + "_ef_numer_phidiffs", phidiffs);
+        else
+            ana.tx.pushbackToBranch<float>(category_name + "_ie_numer_phidiffs", phidiffs);
+
+        // vs. rjet plot
+        ana.tx.pushbackToBranch<float>(category_name + "_ef_denom_rjet", rjet);
+        if (pass)
+            ana.tx.pushbackToBranch<float>(category_name + "_ef_numer_rjet", rjet);
+        else
+            ana.tx.pushbackToBranch<float>(category_name + "_ie_numer_rjet", rjet);
+//---------------------------------------------------------------------------------------------------
 
 }
 
