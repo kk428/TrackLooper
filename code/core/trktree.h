@@ -20,6 +20,22 @@ class trktree {
 private:
 protected:
   unsigned int index;
+
+  // Added by Kasia
+  vector<float> *sim_etadiffs_;
+  TBranch *sim_etadiffs_branch;
+  bool sim_etadiffs_isLoaded;
+
+  // Added by Kasia
+  vector<float> *sim_phidiffs_;
+  TBranch *sim_phidiffs_branch;
+  bool sim_phidiffs_isLoaded;
+
+  // Added by Kasia
+  vector<float> *sim_rjet_;
+  TBranch *sim_rjet_branch;
+  bool sim_rjet_isLoaded;
+
   vector<float> *see_stateCcov01_;
   TBranch *see_stateCcov01_branch;
   bool see_stateCcov01_isLoaded;
@@ -933,6 +949,11 @@ public:
   void Init(TTree *tree);
   void GetEntry(unsigned int idx);
   void LoadAllBranches();
+
+  const vector<float> &sim_etadiffs(); // Added by Kasia
+  const vector<float> &sim_phidiffs(); // Added by Kasia
+  const vector<float> &sim_rjet(); // Added by Kasia
+
   const vector<float> &see_stateCcov01();
   const vector<unsigned short> &simhit_rod();
   const vector<float> &trk_phi();
@@ -1244,6 +1265,10 @@ extern trktree trk;
 #endif
 
 namespace tas {
+
+  const vector<float> &sim_etadiffs(); // Added by Kasia
+  const vector<float> &sim_phidiffs(); // Added by Kasia
+  const vector<float> &sim_rjet(); // Added by Kasia
 
   const vector<float> &see_stateCcov01();
   const vector<unsigned short> &simhit_rod();
