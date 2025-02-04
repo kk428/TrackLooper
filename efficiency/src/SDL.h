@@ -20,6 +20,19 @@ class SDL {
 private:
 protected:
   unsigned int index;
+
+// Added by Kasia ------------------
+  vector<float> *sim_etadiffs_;
+  TBranch *sim_etadiffs_branch;
+  bool sim_etadiffs_isLoaded;
+  vector<float> *sim_phidiffs_;
+  TBranch *sim_phidiffs_branch;
+  bool sim_phidiffs_isLoaded;
+  vector<float> *sim_rjet_;
+  TBranch *sim_rjet_branch;
+  bool sim_rjet_isLoaded;
+// ------------------------------
+
   int pT5_occupancies_;
   TBranch *pT5_occupancies_branch;
   bool pT5_occupancies_isLoaded;
@@ -462,6 +475,12 @@ public:
   void Init(TTree *tree);
   void GetEntry(unsigned int idx);
   void LoadAllBranches();
+
+  // Added by Kasia
+  const vector<float> &sim_etadiffs();
+  const vector<float> &sim_phidiffs();
+  const vector<float> &sim_rjet();
+
   const int &pT5_occupancies();
   const vector<float> &t3_phi();
   const vector<float> &t5_score_rphisum();
@@ -616,6 +635,11 @@ extern SDL sdl;
 #endif
 
 namespace tas {
+
+  // Added by Kasia
+  const vector<float> &sim_etadiffs();
+  const vector<float> &sim_phidiffs();
+  const vector<float> &sim_rjet();
 
   const int &pT5_occupancies();
   const vector<float> &t3_phi();
