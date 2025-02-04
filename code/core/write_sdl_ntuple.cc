@@ -26,6 +26,11 @@ void fillOutputBranches(SDL::Event<SDL::Acc>* event)
 void createRequiredOutputBranches()
 {
     // Setup output TTree
+
+    ana.tx->createBranch<vector<float>>("sim_etadiffs"); // Added by Kasia
+    ana.tx->createBranch<vector<float>>("sim_phidiffs"); // Added by Kasia
+    ana.tx->createBranch<vector<float>>("sim_rjet"); // Added by Kasia
+
     ana.tx->createBranch<vector<float>>("sim_pt");
     ana.tx->createBranch<vector<float>>("sim_eta");
     ana.tx->createBranch<vector<float>>("sim_phi");
@@ -217,6 +222,10 @@ void setOutputBranches(SDL::Event<SDL::Acc>* event)
         // Skip non-hard-scatter
         if (trk.sim_event()[isimtrk] != 0)
             continue;
+
+        ana.tx->pushbackToBranch<float>("sim_etadiffs", trk.sim_etadiffs()[isimtrk]); // Added by Kasia
+        ana.tx->pushbackToBranch<float>("sim_phidiffs", trk.sim_phidiffs()[isimtrk]); // Added by Kasia
+        ana.tx->pushbackToBranch<float>("sim_rjet", trk.sim_rjet()[isimtrk]); // Added by Kasia
 
         ana.tx->pushbackToBranch<float>("sim_pt", trk.sim_pt()[isimtrk]);
         ana.tx->pushbackToBranch<float>("sim_eta", trk.sim_eta()[isimtrk]);
